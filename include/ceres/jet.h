@@ -182,7 +182,7 @@ struct Jet {
   }
 
   // Constructor from scalar: a + 0.
-  explicit Jet(const T& value) {
+  Jet(const T& value) {
     a = value;
     v.setZero();
   }
