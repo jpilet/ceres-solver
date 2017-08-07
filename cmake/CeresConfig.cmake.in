@@ -84,7 +84,7 @@ macro(CERES_REPORT_NOT_FOUND REASON_MSG)
   # FindPackage() use the camelcase library name, not uppercase.
   if (Ceres_FIND_QUIETLY)
     message(STATUS "Failed to find Ceres - " ${REASON_MSG} ${ARGN})
-  else (Ceres_FIND_REQUIRED)
+  elseif (Ceres_FIND_REQUIRED)
     message(FATAL_ERROR "Failed to find Ceres - " ${REASON_MSG} ${ARGN})
   else()
     # Neither QUIETLY nor REQUIRED, use SEND_ERROR which emits an error
@@ -203,8 +203,14 @@ set(CERES_VERSION @CERES_VERSION@ )
 # Eigen.
 # Flag set during configuration and build of Ceres.
 set(CERES_EIGEN_VERSION @EIGEN_VERSION@)
+set(EIGEN_WAS_BUILT_WITH_CMAKE @FOUND_INSTALLED_EIGEN_CMAKE_CONFIGURATION@)
 # Append the locations of Eigen when Ceres was built to the search path hints.
-list(APPEND EIGEN_INCLUDE_DIR_HINTS @EIGEN_INCLUDE_DIR@)
+if (EIGEN_WAS_BUILT_WITH_CMAKE)
+  set(Eigen3_DIR @Eigen3_DIR@)
+  set(EIGEN_PREFER_EXPORTED_EIGEN_CMAKE_CONFIGURATION TRUE)
+else()
+  list(APPEND EIGEN_INCLUDE_DIR_HINTS @EIGEN_INCLUDE_DIR@)
+endif()
 # Search quietly to control the timing of the error message if not found. The
 # search should be for an exact match, but for usability reasons do a soft
 # match and reject with an explanation below.
